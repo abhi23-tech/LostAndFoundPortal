@@ -1,0 +1,2587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CampusFinds – Campus Lost &amp; Found Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --font-body: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --font-display: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+
+      --bg: #f8fafc;
+      --bg-alt: #f1f5f9;
+      --card: #ffffff;
+      --card-border: #e2e8f0;
+      --border-subtle: #f1f5f9;
+
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --text-subtle: #94a3b8;
+      --text-inverse: #ffffff;
+
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --primary-light: #eef2ff;
+      --primary-border: #c7d2fe;
+
+      --lost: #e11d48;
+      --lost-light: #fff1f2;
+      --lost-border: #fecdd3;
+      --lost-dark: #9f1239;
+
+      --found: #0d9488;
+      --found-light: #f0fdfa;
+      --found-border: #99f6e4;
+      --found-dark: #115e59;
+
+      --status-open: #2563eb;
+      --status-open-bg: #eff6ff;
+      --status-open-border: #bfdbfe;
+
+      --status-pending: #d97706;
+      --status-pending-bg: #fffbeb;
+      --status-pending-border: #fde68a;
+
+      --status-returned: #16a34a;
+      --status-returned-bg: #f0fdf4;
+      --status-returned-border: #bbf7d0;
+
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 24px;
+      --radius-full: 9999px;
+
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.07);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.05);
+      --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.05);
+
+      --transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-body);
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Typography */
+    h1, h2, h3, h4 {
+      font-family: var(--font-display);
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.02em;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      width: 100%;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-family: var(--font-body);
+      font-size: 0.92rem;
+      font-weight: 600;
+      padding: 9px 18px;
+      border-radius: var(--radius-md);
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: var(--transition);
+      text-decoration: none;
+      white-space: nowrap;
+      user-select: none;
+    }
+
+    .btn:active { transform: scale(0.98); }
+    .btn-primary {
+      background-color: var(--primary);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(79, 70, 229, 0.35);
+    }
+    .btn-primary:hover {
+      background-color: var(--primary-hover);
+      box-shadow: 0 6px 20px rgba(79, 70, 229, 0.45);
+    }
+    .btn-light {
+      background: #ffffff;
+      color: #0f172a;
+      box-shadow: var(--shadow-sm);
+    }
+    .btn-light:hover {
+      background: #f8fafc;
+      box-shadow: var(--shadow-md);
+    }
+    .btn-ghost {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--card-border);
+    }
+    .btn-ghost:hover {
+      background: var(--bg-alt);
+      border-color: #cbd5e1;
+    }
+    .btn-danger {
+      background: #fff;
+      color: #e11d48;
+      border: 1px solid #fecdd3;
+    }
+    .btn-danger:hover {
+      background: #fff1f2;
+      border-color: #fda4af;
+    }
+    .btn-danger-solid {
+      background: #e11d48;
+      color: #fff;
+    }
+    .btn-danger-solid:hover {
+      background: #be123c;
+    }
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 0.82rem;
+      border-radius: var(--radius-sm);
+    }
+
+    /* Top Hero Header */
+    .hero-header {
+      background: linear-gradient(135deg, #090d16 0%, #15192c 50%, #1a1e36 100%);
+      color: #fff;
+      padding: 32px 0 86px;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .hero-header::before {
+      content: "";
+      position: absolute;
+      top: -30%;
+      right: 5%;
+      width: 480px;
+      height: 480px;
+      background: radial-gradient(circle, rgba(79, 70, 229, 0.22) 0%, rgba(13, 148, 136, 0.08) 50%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .nav-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-icon {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      box-shadow: 0 4px 16px rgba(79, 70, 229, 0.4);
+    }
+
+    .brand-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1.1;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-tag {
+      font-size: 0.7rem;
+      font-family: var(--font-body);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 2px 7px;
+      background: rgba(255, 255, 255, 0.12);
+      color: #a5b4fc;
+      border-radius: var(--radius-full);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .brand-sub {
+      color: #94a3b8;
+      font-size: 0.85rem;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .hero-content {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .hero-text h1 {
+      font-size: clamp(2rem, 4vw, 2.8rem);
+      color: #ffffff;
+      line-height: 1.15;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .hero-text h1 span {
+      background: linear-gradient(90deg, #818cf8 0%, #2dd4bf 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-text p {
+      color: #cbd5e1;
+      font-size: 1.05rem;
+      max-width: 580px;
+      line-height: 1.6;
+    }
+
+    .db-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      background: rgba(34, 197, 94, 0.12);
+      color: #4ade80;
+      border: 1px solid rgba(34, 197, 94, 0.25);
+      border-radius: var(--radius-full);
+      margin-top: 10px;
+    }
+
+    .db-dot {
+      width: 7px;
+      height: 7px;
+      background-color: #22c55e;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #22c55e;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.85); }
+    }
+
+    /* Main Container */
+    main {
+      flex: 1;
+      margin-top: -55px;
+      padding-bottom: 60px;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 18px 20px;
+      box-shadow: var(--shadow-md);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      transition: var(--transition);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-lg);
+      border-color: #cbd5e1;
+    }
+
+    .stat-card::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 4px;
+      background: transparent;
+      transition: var(--transition);
+    }
+
+    .stat-card.total:hover::after { background: var(--primary); }
+    .stat-card.lost:hover::after { background: var(--lost); }
+    .stat-card.found:hover::after { background: var(--found); }
+    .stat-card.returned:hover::after { background: var(--status-returned); }
+
+    .stat-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      flex-shrink: 0;
+    }
+
+    .stat-card.total .stat-icon { background: var(--primary-light); color: var(--primary); }
+    .stat-card.lost .stat-icon { background: var(--lost-light); color: var(--lost); }
+    .stat-card.found .stat-icon { background: var(--found-light); color: var(--found); }
+    .stat-card.returned .stat-icon { background: var(--status-returned-bg); color: var(--status-returned); }
+
+    .stat-details {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stat-value {
+      font-family: var(--font-display);
+      font-size: 1.9rem;
+      font-weight: 800;
+      line-height: 1.1;
+      color: var(--text);
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    /* Insights Panel (Category breakdown & hotspots) */
+    .insights-panel {
+      display: grid;
+      grid-template-columns: 1.35fr 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .insight-box {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .insight-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .insight-header h3 {
+      font-size: 1.05rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .insight-hint {
+      font-size: 0.78rem;
+      color: var(--text-subtle);
+    }
+
+    .category-bars {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .cat-bar-item {
+      display: grid;
+      grid-template-columns: 140px 1fr 40px;
+      align-items: center;
+      gap: 12px;
+      padding: 6px 8px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .cat-bar-item:hover {
+      background: var(--bg-alt);
+    }
+
+    .cat-bar-label {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .cat-bar-track {
+      background: #e2e8f0;
+      height: 10px;
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .cat-bar-fill {
+      height: 100%;
+      border-radius: var(--radius-full);
+      background: linear-gradient(90deg, #4f46e5 0%, #6366f1 100%);
+      transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .cat-bar-count {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-align: right;
+    }
+
+    .hotspot-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .hotspot-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 9px 12px;
+      border-radius: var(--radius-md);
+      background: var(--bg);
+      border: 1px solid var(--border-subtle);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .hotspot-item:hover {
+      background: var(--primary-light);
+      border-color: var(--primary-border);
+    }
+
+    .hotspot-name {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .hotspot-badge {
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      color: var(--primary);
+    }
+
+    /* Toolbar / Filters */
+    .toolbar {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-xl);
+      padding: 16px 20px;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .toolbar-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .tabs {
+      display: inline-flex;
+      background: #e2e8f0;
+      border-radius: var(--radius-md);
+      padding: 4px;
+      gap: 4px;
+    }
+
+    .tab-btn {
+      font-family: var(--font-body);
+      font-size: 0.88rem;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: var(--radius-sm);
+      border: 0;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .tab-btn:hover {
+      color: var(--text);
+    }
+
+    .tab-btn.active {
+      background: #ffffff;
+      color: var(--text);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .tab-count {
+      font-size: 0.75rem;
+      padding: 1px 6px;
+      border-radius: var(--radius-full);
+      background: #cbd5e1;
+      color: var(--text);
+    }
+
+    .tab-btn.active .tab-count {
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+
+    .view-toggles {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .icon-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--card-border);
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: var(--transition);
+    }
+
+    .icon-btn:hover, .icon-btn.active {
+      background: var(--primary-light);
+      color: var(--primary);
+      border-color: var(--primary-border);
+    }
+
+    .toolbar-filters {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .search-wrapper {
+      flex: 1;
+      min-width: 260px;
+      position: relative;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-subtle);
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 10px 38px 10px 40px;
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-md);
+      background: var(--bg);
+      font-family: var(--font-body);
+      font-size: 0.92rem;
+      color: var(--text);
+      transition: var(--transition);
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+    }
+
+    .search-clear {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: transparent;
+      border: 0;
+      color: var(--text-subtle);
+      cursor: pointer;
+      font-size: 1.1rem;
+      display: none;
+      padding: 4px;
+      border-radius: 50%;
+    }
+
+    .search-clear:hover { color: var(--text); }
+    .search-clear.visible { display: block; }
+
+    .filter-select {
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      font-weight: 500;
+      padding: 10px 14px;
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-md);
+      background: #fff;
+      color: var(--text);
+      cursor: pointer;
+      min-width: 150px;
+      transition: var(--transition);
+    }
+
+    .filter-select:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .active-filters-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding-top: 8px;
+      border-top: 1px dashed var(--card-border);
+      font-size: 0.85rem;
+      flex-wrap: wrap;
+    }
+
+    .active-tags {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .filter-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 10px;
+      background: var(--primary-light);
+      color: var(--primary);
+      border: 1px solid var(--primary-border);
+      border-radius: var(--radius-full);
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+
+    .filter-chip-remove {
+      cursor: pointer;
+      color: var(--primary);
+      font-size: 0.9rem;
+      font-weight: bold;
+    }
+
+    .filter-chip-remove:hover { color: #312e81; }
+
+    .results-count {
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    /* Grid & Cards */
+    .items-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 18px;
+    }
+
+    .items-grid.list-view {
+      grid-template-columns: 1fr;
+    }
+
+    .item-card {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      cursor: pointer;
+      transition: var(--transition);
+      position: relative;
+      text-align: left;
+    }
+
+    .item-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-lg);
+      border-color: #cbd5e1;
+    }
+
+    .item-card.lost-card {
+      border-top: 4px solid var(--lost);
+    }
+
+    .item-card.found-card {
+      border-top: 4px solid var(--found);
+    }
+
+    .card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .badge-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: var(--radius-full);
+      letter-spacing: 0.01em;
+      text-transform: capitalize;
+    }
+
+    .badge.lost {
+      background-color: var(--lost-light);
+      color: var(--lost-dark);
+      border: 1px solid var(--lost-border);
+    }
+
+    .badge.found {
+      background-color: var(--found-light);
+      color: var(--found-dark);
+      border: 1px solid var(--found-border);
+    }
+
+    .badge.status-open {
+      background-color: var(--status-open-bg);
+      color: var(--status-open);
+      border: 1px solid var(--status-open-border);
+    }
+
+    .badge.status-pending {
+      background-color: var(--status-pending-bg);
+      color: var(--status-pending);
+      border: 1px solid var(--status-pending-border);
+    }
+
+    .badge.status-returned {
+      background-color: var(--status-returned-bg);
+      color: var(--status-returned);
+      border: 1px solid var(--status-returned-border);
+    }
+
+    .category-tag {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: var(--bg-alt);
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .card-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      line-height: 1.3;
+      color: var(--text);
+    }
+
+    .item-card:hover .card-title {
+      color: var(--primary);
+    }
+
+    .card-desc {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      min-height: 2.7em;
+    }
+
+    .card-meta-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 0.84rem;
+      color: var(--text-muted);
+      padding-top: 10px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .meta-row {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .meta-row svg {
+      flex-shrink: 0;
+      color: var(--text-subtle);
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: auto;
+      padding-top: 12px;
+      border-top: 1px dashed var(--card-border);
+    }
+
+    .claims-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    .claims-indicator.empty {
+      color: var(--text-subtle);
+    }
+
+    .card-action-link {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--primary);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: var(--transition);
+    }
+
+    .item-card:hover .card-action-link {
+      transform: translateX(3px);
+    }
+
+    /* List View Specific Styles */
+    .items-grid.list-view .item-card {
+      flex-direction: row;
+      align-items: center;
+      gap: 20px;
+      border-top: 1px solid var(--card-border);
+    }
+
+    .items-grid.list-view .item-card.lost-card {
+      border-left: 5px solid var(--lost);
+    }
+
+    .items-grid.list-view .item-card.found-card {
+      border-left: 5px solid var(--found);
+    }
+
+    .items-grid.list-view .card-main-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .items-grid.list-view .card-meta-list {
+      flex-direction: row;
+      gap: 20px;
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    .items-grid.list-view .card-footer {
+      border-top: 0;
+      margin-top: 0;
+      padding-top: 0;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+    }
+
+    /* Empty state */
+    .empty-state {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 60px 20px;
+      background: var(--card);
+      border: 1px dashed #cbd5e1;
+      border-radius: var(--radius-xl);
+    }
+
+    .empty-icon {
+      font-size: 3rem;
+      margin-bottom: 12px;
+    }
+
+    .empty-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .empty-desc {
+      color: var(--text-muted);
+      max-width: 420px;
+      margin: 0 auto 20px;
+      font-size: 0.95rem;
+    }
+
+    /* Modals / Dialogs */
+    dialog {
+      border: 0;
+      border-radius: var(--radius-xl);
+      padding: 0;
+      width: min(620px, 94vw);
+      box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.35);
+      background: var(--card);
+      margin: auto;
+    }
+
+    dialog::backdrop {
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(4px);
+    }
+
+    dialog[open] {
+      animation: modalIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes modalIn {
+      from { opacity: 0; transform: scale(0.96) translateY(10px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .dialog-inner {
+      max-height: 90vh;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .dialog-header {
+      padding: 22px 24px;
+      border-bottom: 1px solid var(--card-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      background: var(--card);
+      z-index: 10;
+    }
+
+    .dialog-title-group h2 {
+      font-size: 1.35rem;
+      line-height: 1.2;
+    }
+
+    .dialog-title-group p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .close-modal-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 0;
+      background: var(--bg-alt);
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      transition: var(--transition);
+    }
+
+    .close-modal-btn:hover {
+      background: #e2e8f0;
+      color: var(--text);
+    }
+
+    .dialog-body {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    /* Form controls */
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    label {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .label-hint {
+      font-weight: 400;
+      font-size: 0.75rem;
+      color: var(--text-subtle);
+    }
+
+    input, select, textarea {
+      font-family: var(--font-body);
+      font-size: 0.92rem;
+      padding: 10px 14px;
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-md);
+      background: var(--bg);
+      color: var(--text);
+      transition: var(--transition);
+      width: 100%;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    /* Type Segmented Control */
+    .type-switcher {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .type-option input {
+      display: none;
+    }
+
+    .type-option span {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px;
+      border: 2px solid var(--card-border);
+      border-radius: var(--radius-md);
+      font-weight: 700;
+      font-size: 0.92rem;
+      cursor: pointer;
+      transition: var(--transition);
+      background: var(--bg);
+    }
+
+    .type-option.lost-opt input:checked + span {
+      border-color: var(--lost);
+      background: var(--lost-light);
+      color: var(--lost-dark);
+      box-shadow: 0 2px 8px rgba(225, 29, 72, 0.15);
+    }
+
+    .type-option.found-opt input:checked + span {
+      border-color: var(--found);
+      background: var(--found-light);
+      color: var(--found-dark);
+      box-shadow: 0 2px 8px rgba(13, 148, 136, 0.15);
+    }
+
+    /* Campus location chips */
+    .chip-suggestions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .loc-chip {
+      font-size: 0.75rem;
+      padding: 3px 8px;
+      border-radius: var(--radius-full);
+      background: var(--bg-alt);
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .loc-chip:hover {
+      background: var(--primary-light);
+      color: var(--primary);
+      border-color: var(--primary-border);
+    }
+
+    .dialog-footer {
+      padding: 18px 24px;
+      border-top: 1px solid var(--card-border);
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+      background: var(--bg);
+      border-bottom-left-radius: var(--radius-xl);
+      border-bottom-right-radius: var(--radius-xl);
+    }
+
+    .error-box {
+      background: #fff1f2;
+      border: 1px solid #fecdd3;
+      color: #be123c;
+      padding: 10px 14px;
+      border-radius: var(--radius-md);
+      font-size: 0.88rem;
+      display: none;
+    }
+
+    .error-box.show {
+      display: block;
+    }
+
+    /* Detail Modal Specifics */
+    .detail-hero {
+      background: var(--bg);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      border: 1px solid var(--card-border);
+    }
+
+    .detail-badges {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .detail-title {
+      font-size: 1.4rem;
+      font-weight: 800;
+      line-height: 1.25;
+      color: var(--text);
+    }
+
+    .detail-desc {
+      font-size: 0.95rem;
+      color: var(--text);
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .detail-meta-box {
+      background: #fff;
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .detail-meta-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-subtle);
+    }
+
+    .detail-meta-value {
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Reporter Contact Card */
+    .contact-card {
+      background: #fff;
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .contact-person {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .contact-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: var(--primary-light);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+
+    .contact-info-text b {
+      display: block;
+      font-size: 0.95rem;
+    }
+
+    .contact-info-text span {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .contact-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Status Control Panel in Detail */
+    .status-panel {
+      background: var(--bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .status-panel-label {
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    .status-btn-group {
+      display: inline-flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .status-pill-btn {
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 5px 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--card-border);
+      background: #fff;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .status-pill-btn:hover {
+      background: var(--bg-alt);
+    }
+
+    .status-pill-btn.current {
+      background: var(--text);
+      color: #fff;
+      border-color: var(--text);
+    }
+
+    /* Claims list */
+    .claims-section {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .claims-section h3 {
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .claim-item {
+      background: var(--bg);
+      border: 1px solid var(--card-border);
+      border-left: 4px solid var(--primary);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .claim-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 0.88rem;
+    }
+
+    .claim-header b {
+      color: var(--text);
+    }
+
+    .claim-time {
+      font-size: 0.78rem;
+      color: var(--text-subtle);
+    }
+
+    .claim-contact {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .claim-msg {
+      background: #fff;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 8px 12px;
+      font-size: 0.9rem;
+      color: var(--text);
+      font-style: italic;
+    }
+
+    .no-claims-notice {
+      padding: 14px;
+      text-align: center;
+      color: var(--text-muted);
+      background: var(--bg);
+      border-radius: var(--radius-md);
+      font-size: 0.9rem;
+    }
+
+    .returned-banner {
+      background: var(--status-returned-bg);
+      border: 1px solid var(--status-returned-border);
+      color: var(--status-returned);
+      padding: 14px 18px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 600;
+      font-size: 0.92rem;
+    }
+
+    /* Claim submission form in modal */
+    .claim-form-box {
+      background: var(--primary-light);
+      border: 1px solid var(--primary-border);
+      border-radius: var(--radius-lg);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .claim-form-box h4 {
+      font-size: 1rem;
+      color: #312e81;
+    }
+
+    /* Toast Notification */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 9999;
+      pointer-events: none;
+    }
+
+    .toast {
+      background: #0f172a;
+      color: #ffffff;
+      padding: 12px 18px;
+      border-radius: var(--radius-md);
+      font-size: 0.9rem;
+      font-weight: 600;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transform: translateY(20px);
+      opacity: 0;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: auto;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .toast.success { background: #065f46; }
+    .toast.error { background: #991b1b; }
+    .toast.info { background: #1e1b4b; }
+
+    /* Footer */
+    footer {
+      background: #fff;
+      border-top: 1px solid var(--card-border);
+      padding: 24px 0;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      margin-top: auto;
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .insights-panel { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 640px) {
+      .stats-grid { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+      .detail-grid { grid-template-columns: 1fr; }
+      .toolbar-top { flex-direction: column; align-items: stretch; }
+      .toolbar-filters { flex-direction: column; }
+      .filter-select { width: 100%; }
+      .hero-content { flex-direction: column; align-items: flex-start; }
+      .contact-card { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Hero Section -->
+  <header class="hero-header">
+    <div class="container">
+      <nav class="nav-bar">
+        <div class="brand-group">
+          <div class="brand-icon">🧭</div>
+          <div>
+            <div class="brand-title">
+              CampusFinds
+              <span class="brand-tag">Lost &amp; Found</span>
+            </div>
+            <div class="brand-sub">University Central Recovery Portal</div>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <button class="btn btn-primary" id="btnOpenReport">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Report an Item
+          </button>
+        </div>
+      </nav>
+
+      <div class="hero-content">
+        <div class="hero-text">
+          <h1>Lost something? <span>We'll help find it.</span></h1>
+          <p>Every lost item deserves a way back home. Search campus records, report recovered belongings, and submit verified claims in real time.</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container">
+
+    <!-- KPI Metric Cards -->
+    <section class="stats-grid" id="statsGrid">
+      <div class="stat-card total" data-stat="all" title="Click to view all items">
+        <div class="stat-icon">📦</div>
+        <div class="stat-details">
+          <span class="stat-value" id="statTotal">--</span>
+          <span class="stat-label">Total Posts</span>
+        </div>
+      </div>
+      <div class="stat-card lost" data-stat="lost" title="Click to filter by lost items">
+        <div class="stat-icon">🔍</div>
+        <div class="stat-details">
+          <span class="stat-value" id="statLost">--</span>
+          <span class="stat-label">Lost Items</span>
+        </div>
+      </div>
+      <div class="stat-card found" data-stat="found" title="Click to filter by found items">
+        <div class="stat-icon">✨</div>
+        <div class="stat-details">
+          <span class="stat-value" id="statFound">--</span>
+          <span class="stat-label">Found Belongings</span>
+        </div>
+      </div>
+      <div class="stat-card returned" data-stat="returned" title="Click to filter by returned items">
+        <div class="stat-icon">🎉</div>
+        <div class="stat-details">
+          <span class="stat-value" id="statReturned">--</span>
+          <span class="stat-label">Returned to Owner</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Visual Analytics Panels -->
+    <section class="insights-panel">
+      <!-- Category breakdown -->
+      <div class="insight-box">
+        <div class="insight-header">
+          <h3>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path><path d="M22 12A10 10 0 0 0 12 2v10z"></path></svg>
+            Items by Category
+          </h3>
+          <span class="insight-hint">Click a category to filter</span>
+        </div>
+        <div class="category-bars" id="categoryBars">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Campus Hotspots -->
+      <div class="insight-box">
+        <div class="insight-header">
+          <h3>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            Busiest Campus Hotspots
+          </h3>
+          <span class="insight-hint">Click a place to filter</span>
+        </div>
+        <div class="hotspot-list" id="hotspotList">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Search & Filter Toolbar -->
+    <div class="toolbar">
+      <div class="toolbar-top">
+        <div class="tabs" id="typeTabs">
+          <button class="tab-btn active" data-type="">
+            All Items
+            <span class="tab-count" id="countAll">0</span>
+          </button>
+          <button class="tab-btn" data-type="lost">
+            Lost
+            <span class="tab-count" id="countLost">0</span>
+          </button>
+          <button class="tab-btn" data-type="found">
+            Found
+            <span class="tab-count" id="countFound">0</span>
+          </button>
+        </div>
+
+        <div class="view-toggles">
+          <button class="icon-btn active" id="viewGridBtn" title="Grid View">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+          </button>
+          <button class="icon-btn" id="viewListBtn" title="Compact List View">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="toolbar-filters">
+        <div class="search-wrapper">
+          <span class="search-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          </span>
+          <input type="text" id="searchInput" class="search-input" placeholder="Search by item name, description, location..." aria-label="Search items">
+          <button class="search-clear" id="searchClearBtn" title="Clear search">✕</button>
+        </div>
+
+        <select id="categoryFilter" class="filter-select" aria-label="Filter by Category">
+          <option value="">All Categories</option>
+        </select>
+
+        <select id="statusFilter" class="filter-select" aria-label="Filter by Status">
+          <option value="">All Statuses</option>
+          <option value="open">Open</option>
+          <option value="pending">Claim Pending</option>
+          <option value="returned">Returned to Owner</option>
+        </select>
+
+        <select id="sortFilter" class="filter-select" aria-label="Sort order">
+          <option value="">Newest Added</option>
+          <option value="oldest">Oldest Added</option>
+          <option value="date_desc">Incident Date (Recent)</option>
+          <option value="title">Alphabetical (A-Z)</option>
+        </select>
+      </div>
+
+      <!-- Active filters & count summary -->
+      <div class="active-filters-row" id="activeFiltersRow">
+        <div class="active-tags" id="activeTagsContainer">
+          <!-- Dynamic filter chips -->
+        </div>
+        <div class="results-count" id="resultsCount">Loading items...</div>
+      </div>
+    </div>
+
+    <!-- Items Grid Container -->
+    <section class="items-grid" id="itemsGrid">
+      <!-- Item cards rendered here -->
+    </section>
+
+  </main>
+
+  <!-- Report Item Modal -->
+  <dialog id="reportDialog">
+    <div class="dialog-inner">
+      <div class="dialog-header">
+        <div class="dialog-title-group">
+          <h2>Report Campus Item</h2>
+          <p>Provide accurate details to help recover or return the item.</p>
+        </div>
+        <button class="close-modal-btn" data-close title="Close modal">✕</button>
+      </div>
+
+      <form id="reportForm" method="dialog">
+        <div class="dialog-body">
+          <div class="form-group">
+            <label>Item Type</label>
+            <div class="type-switcher">
+              <label class="type-option lost-opt">
+                <input type="radio" name="type" value="lost" checked>
+                <span>🔍 I Lost This Item</span>
+              </label>
+              <label class="type-option found-opt">
+                <input type="radio" name="type" value="found">
+                <span>✨ I Found This Item</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="formTitle">Item Name <span class="label-hint">Max 80 chars</span></label>
+            <input type="text" id="formTitle" name="title" required maxlength="80" placeholder="e.g. Black HP Laptop Charger, Silver Casio Watch">
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="formCategory">Category</label>
+              <select id="formCategory" name="category" required></select>
+            </div>
+            <div class="form-group">
+              <label for="formDate">Date Lost / Found</label>
+              <input type="date" id="formDate" name="date" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="formLocation">Location on Campus</label>
+            <input type="text" id="formLocation" name="location" required placeholder="e.g. Central Library, 2nd floor study wing">
+            <div class="chip-suggestions">
+              <span class="loc-chip" data-loc="Library, 2nd floor">Library</span>
+              <span class="loc-chip" data-loc="Main Canteen">Canteen</span>
+              <span class="loc-chip" data-loc="Parking lot A">Parking A</span>
+              <span class="loc-chip" data-loc="Block B corridor">Block B</span>
+              <span class="loc-chip" data-loc="Sports ground">Sports Ground</span>
+              <span class="loc-chip" data-loc="Exam Hall 2">Exam Hall</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="formDescription">Description &amp; Identifying Details <span class="label-hint">Max 400 chars</span></label>
+            <textarea id="formDescription" name="description" rows="3" maxlength="400" placeholder="Mention brand, color, stickers, unique scratches, or contents inside..."></textarea>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="formContactName">Your Name</label>
+              <input type="text" id="formContactName" name="contactName" required placeholder="e.g. Rohan Patil / Front Desk">
+            </div>
+            <div class="form-group">
+              <label for="formContact">Phone or Email</label>
+              <input type="text" id="formContact" name="contact" required placeholder="e.g. 98900 12345 or student@college.edu">
+            </div>
+          </div>
+
+          <div class="error-box" id="formErrorBox"></div>
+        </div>
+
+        <div class="dialog-footer">
+          <button type="button" class="btn btn-ghost" data-close>Cancel</button>
+          <button type="submit" class="btn btn-primary" id="btnSubmitReport">
+            <span>Publish Post</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </dialog>
+
+  <!-- View Details & Claims Modal -->
+  <dialog id="detailDialog">
+    <div class="dialog-inner">
+      <div class="dialog-header">
+        <div class="dialog-title-group">
+          <h2>Item Details &amp; Claims</h2>
+          <p>Review post information, verify ownership, or contact the reporter.</p>
+        </div>
+        <button class="close-modal-btn" data-close title="Close modal">✕</button>
+      </div>
+
+      <div class="dialog-body" id="detailBody">
+        <!-- Injected via JavaScript -->
+      </div>
+
+      <div class="dialog-footer" id="detailFooter">
+        <!-- Injected via JavaScript -->
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container footer-inner">
+      <div>
+        <strong>CampusFinds</strong> · Campus Lost &amp; Found Portal
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // State & constants
+    const CATEGORIES = [
+      { name: 'Electronics', icon: '💻' },
+      { name: 'Books & Notes', icon: '📚' },
+      { name: 'ID & Cards', icon: '🪪' },
+      { name: 'Clothing', icon: '👕' },
+      { name: 'Keys', icon: '🔑' },
+      { name: 'Bags', icon: '🎒' },
+      { name: 'Other', icon: '📦' }
+    ];
+
+    const STATUS_MAP = {
+      open: { label: 'Open', class: 'status-open', icon: '🔵' },
+      pending: { label: 'Claim Pending', class: 'status-pending', icon: '🟡' },
+      returned: { label: 'Returned', class: 'status-returned', icon: '🟢' }
+    };
+
+    let itemsData = [];
+    let currentTypeFilter = '';
+    let searchDebounceTimer = null;
+    let isListView = false;
+
+    // Helper functions
+    const $ = selector => document.querySelector(selector);
+    const $$ = selector => document.querySelectorAll(selector);
+
+    const escapeHTML = str => String(str ?? '').replace(/[&<>"']/g, c => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[c]));
+
+    const formatDate = d => {
+      if (!d) return 'Unknown date';
+      const date = new Date(d);
+      if (isNaN(date.getTime())) return 'Unknown date';
+      return date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+    };
+
+    const timeAgo = d => {
+      if (!d) return '';
+      const date = new Date(d);
+      if (isNaN(date.getTime())) return '';
+      const diffMs = Date.now() - date.getTime();
+      const diffSecs = Math.floor(diffMs / 1000);
+      const diffDays = Math.floor(diffSecs / 86400);
+
+      if (diffDays <= 0) return 'Today';
+      if (diffDays === 1) return 'Yesterday';
+      if (diffDays < 7) return `${diffDays} days ago`;
+      if (diffDays < 30) return `${Math.floor(diffDays / 7)}w ago`;
+      return formatDate(d);
+    };
+
+    const getCategoryIcon = cat => {
+      const match = CATEGORIES.find(c => c.name === cat);
+      return match ? match.icon : '📦';
+    };
+
+    // API Helper
+    async function apiCall(endpoint, method = 'GET', body = null) {
+      const options = {
+        method,
+        headers: { 'Content-Type': 'application/json' }
+      };
+      if (body) options.body = JSON.stringify(body);
+
+      const res = await fetch(endpoint, options);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Server request failed');
+      return data;
+    }
+
+    // Toast notifications
+    function showToast(message, type = 'info') {
+      const container = $('#toastContainer');
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+
+      let icon = 'ℹ️';
+      if (type === 'success') icon = '✅';
+      if (type === 'error') icon = '⚠️';
+
+      toast.innerHTML = `<span>${icon}</span> <span>${escapeHTML(message)}</span>`;
+      container.appendChild(toast);
+
+      requestAnimationFrame(() => toast.classList.add('show'));
+
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+      }, 3500);
+    }
+
+    // Initialize category dropdowns
+    function populateCategoryOptions() {
+      const catSelect = $('#categoryFilter');
+      const formCatSelect = $('#formCategory');
+
+      catSelect.innerHTML = '<option value="">All Categories</option>' +
+        CATEGORIES.map(c => `<option value="${escapeHTML(c.name)}">${c.icon} ${escapeHTML(c.name)}</option>`).join('');
+
+      formCatSelect.innerHTML = CATEGORIES.map(c => `<option value="${escapeHTML(c.name)}">${c.icon} ${escapeHTML(c.name)}</option>`).join('');
+    }
+
+    // Load Aggregation / Dashboard Stats
+    async function loadStats() {
+      try {
+        const stats = await apiCall('/api/stats');
+        const byType = stats.byType || [];
+        const byStatus = stats.byStatus || [];
+        const byCategory = stats.byCategory || [];
+        const hotspots = stats.hotspots || [];
+
+        const getCount = (arr, id) => (arr.find(item => item._id === id) || {}).n || 0;
+
+        const totalItems = byType.reduce((acc, curr) => acc + curr.n, 0);
+        const lostCount = getCount(byType, 'lost');
+        const foundCount = getCount(byType, 'found');
+        const returnedCount = getCount(byStatus, 'returned');
+
+        // Update KPI numbers
+        $('#statTotal').textContent = totalItems;
+        $('#statLost').textContent = lostCount;
+        $('#statFound').textContent = foundCount;
+        $('#statReturned').textContent = returnedCount;
+
+        // Update Tab pill badges
+        $('#countAll').textContent = totalItems;
+        $('#countLost').textContent = lostCount;
+        $('#countFound').textContent = foundCount;
+
+        // Render Category Progress Bars
+        const maxCatCount = Math.max(1, ...byCategory.map(c => c.n));
+        const catBarsContainer = $('#categoryBars');
+
+        if (byCategory.length === 0) {
+          catBarsContainer.innerHTML = '<div class="insight-hint">No category data available yet.</div>';
+        } else {
+          catBarsContainer.innerHTML = byCategory.map(c => {
+            const pct = Math.round((c.n / maxCatCount) * 100);
+            return `
+              <div class="cat-bar-item" data-category="${escapeHTML(c._id)}" title="Click to filter by ${escapeHTML(c._id)}">
+                <span class="cat-bar-label">${getCategoryIcon(c._id)} ${escapeHTML(c._id)}</span>
+                <div class="cat-bar-track">
+                  <div class="cat-bar-fill" style="width: ${pct}%"></div>
+                </div>
+                <span class="cat-bar-count">${c.n}</span>
+              </div>
+            `;
+          }).join('');
+        }
+
+        // Render Campus Hotspots
+        const hotspotContainer = $('#hotspotList');
+        if (hotspots.length === 0) {
+          hotspotContainer.innerHTML = '<div class="insight-hint">No location hotspots recorded yet.</div>';
+        } else {
+          hotspotContainer.innerHTML = hotspots.map(h => `
+            <div class="hotspot-item" data-location="${escapeHTML(h._id)}" title="Click to filter items in ${escapeHTML(h._id)}">
+              <span class="hotspot-name">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                ${escapeHTML(h._id)}
+              </span>
+              <span class="hotspot-badge">${h.n} item${h.n > 1 ? 's' : ''}</span>
+            </div>
+          `).join('');
+        }
+
+      } catch (err) {
+        console.error('Failed to load stats:', err);
+      }
+    }
+
+    // Load & Render Items List
+    async function loadItems() {
+      const q = $('#searchInput').value.trim();
+      const category = $('#categoryFilter').value;
+      const status = $('#statusFilter').value;
+      const sort = $('#sortFilter').value;
+
+      // Update Clear button on search
+      $('#searchClearBtn').classList.toggle('visible', q.length > 0);
+
+      const params = new URLSearchParams();
+      if (q) params.set('q', q);
+      if (currentTypeFilter) params.set('type', currentTypeFilter);
+      if (category) params.set('category', category);
+      if (status) params.set('status', status);
+      if (sort) params.set('sort', sort);
+
+      try {
+        itemsData = await apiCall('/api/items?' + params.toString());
+        renderItems();
+        updateActiveFilterTags();
+      } catch (err) {
+        console.error('Failed to load items:', err);
+        $('#itemsGrid').innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">⚠️</div>
+            <div class="empty-title">Error Loading Items</div>
+            <div class="empty-desc">${escapeHTML(err.message)}</div>
+            <button class="btn btn-primary" onclick="loadItems()">Retry</button>
+          </div>
+        `;
+      }
+    }
+
+    // Render Cards in Grid or List Mode
+    function renderItems() {
+      const grid = $('#itemsGrid');
+      grid.classList.toggle('list-view', isListView);
+
+      $('#resultsCount').textContent = `Showing ${itemsData.length} item${itemsData.length === 1 ? '' : 's'}`;
+
+      if (itemsData.length === 0) {
+        grid.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">🔍</div>
+            <div class="empty-title">No matching campus items found</div>
+            <div class="empty-desc">Try clearing some filters, searching with different terms, or report a new lost/found item.</div>
+            <div style="display:flex; justify-content:center; gap:10px;">
+              <button class="btn btn-ghost" onclick="resetAllFilters()">Reset Filters</button>
+              <button class="btn btn-primary" onclick="openReportDialog()">Report Item</button>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = itemsData.map(item => {
+        const isLost = item.type === 'lost';
+        const statusConfig = STATUS_MAP[item.status] || STATUS_MAP.open;
+        const claimsCount = item.claims ? item.claims.length : 0;
+        const icon = getCategoryIcon(item.category);
+
+        return `
+          <div class="item-card ${isLost ? 'lost-card' : 'found-card'}" data-id="${item._id}">
+            <div class="card-main-info">
+              <div class="card-top">
+                <div class="badge-group">
+                  <span class="badge ${isLost ? 'lost' : 'found'}">
+                    ${isLost ? '🔴 Lost' : '🟢 Found'}
+                  </span>
+                  <span class="badge ${statusConfig.class}">
+                    ${statusConfig.icon} ${statusConfig.label}
+                  </span>
+                </div>
+                <span class="category-tag">${icon} ${escapeHTML(item.category)}</span>
+              </div>
+
+              <h3 class="card-title">${escapeHTML(item.title)}</h3>
+              <p class="card-desc">${escapeHTML(item.description) || '<em>No extra description provided by poster.</em>'}</p>
+
+              <div class="card-meta-list">
+                <div class="meta-row" title="Location: ${escapeHTML(item.location)}">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                  <span>${escapeHTML(item.location)}</span>
+                </div>
+                <div class="meta-row" title="Incident Date">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                  <span>${formatDate(item.date)} <span style="color:var(--text-subtle);">(${timeAgo(item.date)})</span></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="card-footer">
+              <div class="claims-indicator ${claimsCount === 0 ? 'empty' : ''}">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                <span>${claimsCount > 0 ? `${claimsCount} Claim${claimsCount > 1 ? 's' : ''}` : 'No claims yet'}</span>
+              </div>
+
+              <span class="card-action-link">
+                View &amp; Claim →
+              </span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Active filters indicators
+    function updateActiveFilterTags() {
+      const container = $('#activeTagsContainer');
+      const q = $('#searchInput').value.trim();
+      const category = $('#categoryFilter').value;
+      const status = $('#statusFilter').value;
+      const sort = $('#sortFilter').value;
+
+      const chips = [];
+
+      if (currentTypeFilter) {
+        chips.push({ label: `Type: ${currentTypeFilter.toUpperCase()}`, clear: () => setTypeFilter('') });
+      }
+      if (q) {
+        chips.push({ label: `Query: "${q}"`, clear: () => { $('#searchInput').value = ''; loadItems(); } });
+      }
+      if (category) {
+        chips.push({ label: `Category: ${category}`, clear: () => { $('#categoryFilter').value = ''; loadItems(); } });
+      }
+      if (status) {
+        chips.push({ label: `Status: ${STATUS_MAP[status]?.label || status}`, clear: () => { $('#statusFilter').value = ''; loadItems(); } });
+      }
+      if (sort) {
+        chips.push({ label: `Sort: ${$('#sortFilter').selectedOptions[0].text}`, clear: () => { $('#sortFilter').value = ''; loadItems(); } });
+      }
+
+      if (chips.length === 0) {
+        container.innerHTML = '<span style="color:var(--text-subtle);">Showing all live posts</span>';
+        return;
+      }
+
+      container.innerHTML = `
+        <span style="font-weight:600; color:var(--text-muted);">Active filters:</span>
+        ${chips.map((c, i) => `
+          <span class="filter-chip">
+            ${escapeHTML(c.label)}
+            <span class="filter-chip-remove" data-chip-idx="${i}" title="Remove this filter">×</span>
+          </span>
+        `).join('')}
+        <button class="btn btn-sm btn-ghost" onclick="resetAllFilters()" style="padding:2px 8px; font-size:0.75rem;">Clear all</button>
+      `;
+
+      // Attach click events
+      chips.forEach((c, idx) => {
+        const el = container.querySelector(`[data-chip-idx="${idx}"]`);
+        if (el) el.onclick = c.clear;
+      });
+    }
+
+    function setTypeFilter(t) {
+      currentTypeFilter = t;
+      $$('#typeTabs .tab-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.type === t);
+      });
+      loadItems();
+    }
+
+    function resetAllFilters() {
+      currentTypeFilter = '';
+      $('#searchInput').value = '';
+      $('#categoryFilter').value = '';
+      $('#statusFilter').value = '';
+      $('#sortFilter').value = '';
+      $$('#typeTabs .tab-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.type === ''));
+      loadItems();
+      showToast('Filters reset', 'info');
+    }
+
+    // Refresh everything
+    const refreshApp = () => Promise.all([loadItems(), loadStats()]);
+
+    // Open Report Item Dialog
+    function openReportDialog() {
+      const form = $('#reportForm');
+      form.reset();
+      $('#formDate').valueAsDate = new Date();
+      $('#formErrorBox').className = 'error-box';
+      $('#formErrorBox').textContent = '';
+      $('#reportDialog').showModal();
+    }
+
+    // Open Item Detail & Claims Dialog
+    async function openItemDetail(id) {
+      try {
+        const item = await apiCall('/api/items/' + id);
+        const isLost = item.type === 'lost';
+        const statusConfig = STATUS_MAP[item.status] || STATUS_MAP.open;
+        const icon = getCategoryIcon(item.category);
+        const claims = item.claims || [];
+
+        const isPhone = /^[0-9+\-\s()]{7,15}$/.test(item.contact.trim());
+        const isEmail = item.contact.includes('@');
+
+        $('#detailBody').innerHTML = `
+          <div class="detail-hero">
+            <div class="detail-badges">
+              <span class="badge ${isLost ? 'lost' : 'found'}">
+                ${isLost ? '🔴 Lost Item' : '🟢 Found Item'}
+              </span>
+              <span class="badge ${statusConfig.class}">
+                ${statusConfig.icon} ${statusConfig.label}
+              </span>
+              <span class="category-tag">${icon} ${escapeHTML(item.category)}</span>
+            </div>
+
+            <h2 class="detail-title">${escapeHTML(item.title)}</h2>
+            <div class="detail-desc">${escapeHTML(item.description) || '<em style="color:var(--text-subtle)">No additional description provided.</em>'}</div>
+          </div>
+
+          <!-- Metadata grid -->
+          <div class="detail-grid">
+            <div class="detail-meta-box">
+              <span class="detail-meta-label">Campus Location</span>
+              <span class="detail-meta-value">📍 ${escapeHTML(item.location)}</span>
+            </div>
+            <div class="detail-meta-box">
+              <span class="detail-meta-label">Date of Incident</span>
+              <span class="detail-meta-value">📅 ${formatDate(item.date)} (${timeAgo(item.date)})</span>
+            </div>
+            <div class="detail-meta-box">
+              <span class="detail-meta-label">Category</span>
+              <span class="detail-meta-value">${icon} ${escapeHTML(item.category)}</span>
+            </div>
+            <div class="detail-meta-box">
+              <span class="detail-meta-label">Reported On</span>
+              <span class="detail-meta-value">🕒 ${formatDate(item.createdAt)}</span>
+            </div>
+          </div>
+
+          <!-- Reporter Contact Card -->
+          <div class="contact-card">
+            <div class="contact-person">
+              <div class="contact-avatar">
+                ${escapeHTML(item.contactName.slice(0, 1).toUpperCase())}
+              </div>
+              <div class="contact-info-text">
+                <b>${escapeHTML(item.contactName)}</b>
+                <span>${escapeHTML(item.contact)}</span>
+              </div>
+            </div>
+
+            <div class="contact-actions">
+              ${isPhone ? `<a href="tel:${escapeHTML(item.contact)}" class="btn btn-sm btn-ghost" title="Call">📞 Call</a>` : ''}
+              ${isEmail ? `<a href="mailto:${escapeHTML(item.contact)}" class="btn btn-sm btn-ghost" title="Send Email">✉️ Email</a>` : ''}
+              <button class="btn btn-sm btn-light" id="btnCopyContact" data-contact="${escapeHTML(item.contact)}">
+                📋 Copy
+              </button>
+            </div>
+          </div>
+
+          <!-- Status Control Panel -->
+          <div class="status-panel">
+            <span class="status-panel-label">Post Status:</span>
+            <div class="status-btn-group">
+              <button class="status-pill-btn ${item.status === 'open' ? 'current' : ''}" data-change-status="open" data-id="${item._id}">
+                🔵 Mark Open
+              </button>
+              <button class="status-pill-btn ${item.status === 'pending' ? 'current' : ''}" data-change-status="pending" data-id="${item._id}">
+                🟡 Mark Pending
+              </button>
+              <button class="status-pill-btn ${item.status === 'returned' ? 'current' : ''}" data-change-status="returned" data-id="${item._id}">
+                🟢 Mark Returned
+              </button>
+            </div>
+          </div>
+
+          <!-- Claims Section -->
+          <div class="claims-section">
+            <h3>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+              Registered Claims (${claims.length})
+            </h3>
+
+            ${claims.length > 0 ? claims.map(c => `
+              <div class="claim-item">
+                <div class="claim-header">
+                  <b>👤 ${escapeHTML(c.name)}</b>
+                  <span class="claim-time">${c.createdAt ? timeAgo(c.createdAt) : ''}</span>
+                </div>
+                <div class="claim-contact">
+                  <span>Contact: ${escapeHTML(c.contact)}</span>
+                  <button class="btn btn-sm btn-ghost" style="padding:2px 6px; font-size:0.75rem" onclick="navigator.clipboard.writeText('${escapeHTML(c.contact)}'); showToast('Contact copied!', 'success');">Copy</button>
+                </div>
+                ${c.message ? `<div class="claim-msg">"${escapeHTML(c.message)}"</div>` : ''}
+              </div>
+            `).join('') : '<div class="no-claims-notice">No claims or recovery notes have been submitted for this item yet.</div>'}
+
+            <!-- Claim Submission Form -->
+            ${item.status === 'returned' ? `
+              <div class="returned-banner">
+                🎉 This item has officially been marked as returned to its owner!
+              </div>
+            ` : `
+              <form class="claim-form-box" id="claimSubmitForm" data-id="${item._id}">
+                <h4>${isLost ? '💬 I Found This Item' : '💬 This Is My Item'}</h4>
+                <p style="font-size:0.85rem; color:var(--text-muted); margin-top:-6px;">
+                  Provide your details and unique identifying proof so the poster can verify and reach out to you.
+                </p>
+                <div class="form-row">
+                  <input type="text" name="name" placeholder="Your Full Name" required>
+                  <input type="text" name="contact" placeholder="Phone Number or Email" required>
+                </div>
+                <textarea name="message" rows="2" placeholder="Describe identifying marks, serial numbers, wallpapers, contents, or location where it was spotted/found..." required></textarea>
+                <div class="error-box" id="claimErrorBox"></div>
+                <button type="submit" class="btn btn-primary" style="align-self: flex-start;">
+                  Submit Claim Verification
+                </button>
+              </form>
+            `}
+          </div>
+        `;
+
+        // Footer actions with safe delete confirmation
+        $('#detailFooter').innerHTML = `
+          <button class="btn btn-danger" id="btnDeletePost" data-id="${item._id}">
+            🗑️ Delete Post
+          </button>
+          <button class="btn btn-ghost" data-close>Close</button>
+        `;
+
+        // Bind copy contact button
+        const copyBtn = $('#btnCopyContact');
+        if (copyBtn) {
+          copyBtn.onclick = () => {
+            navigator.clipboard.writeText(copyBtn.dataset.contact);
+            copyBtn.textContent = '✓ Copied!';
+            showToast('Contact copied to clipboard!', 'success');
+            setTimeout(() => { copyBtn.textContent = '📋 Copy'; }, 2000);
+          };
+        }
+
+        if (!$('#detailDialog').open) {
+          $('#detailDialog').showModal();
+        }
+
+      } catch (err) {
+        showToast('Failed to load item: ' + err.message, 'error');
+      }
+    }
+
+    // Event Listeners Initialization
+    document.addEventListener('DOMContentLoaded', () => {
+      populateCategoryOptions();
+
+      // Top buttons
+      $('#btnOpenReport').onclick = openReportDialog;
+
+      // Close modal events
+      document.addEventListener('click', e => {
+        if (e.target.matches('[data-close]') || e.target.closest('[data-close]')) {
+          const dlg = e.target.closest('dialog');
+          if (dlg) dlg.close();
+        }
+      });
+
+      // Quick location chips in report form
+      $$('.loc-chip').forEach(chip => {
+        chip.onclick = () => {
+          $('#formLocation').value = chip.dataset.loc;
+        };
+      });
+
+      // Report Form Submission
+      $('#reportForm').onsubmit = async e => {
+        e.preventDefault();
+        const submitBtn = $('#btnSubmitReport');
+        const errBox = $('#formErrorBox');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span>Posting...</span>';
+        errBox.className = 'error-box';
+
+        try {
+          const formData = new FormData(e.target);
+          const payload = Object.fromEntries(formData.entries());
+
+          await apiCall('/api/items', 'POST', payload);
+          $('#reportDialog').close();
+          showToast('Item posted successfully! 🎉', 'success');
+          refreshApp();
+        } catch (err) {
+          errBox.textContent = err.message;
+          errBox.classList.add('show');
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<span>Publish Post</span>';
+        }
+      };
+
+      // Type tabs in toolbar
+      $('#typeTabs').onclick = e => {
+        const btn = e.target.closest('.tab-btn');
+        if (btn && btn.dataset.type !== undefined) {
+          setTypeFilter(btn.dataset.type);
+        }
+      };
+
+      // Search input with debounce
+      $('#searchInput').oninput = () => {
+        clearTimeout(searchDebounceTimer);
+        searchDebounceTimer = setTimeout(loadItems, 220);
+      };
+
+      $('#searchClearBtn').onclick = () => {
+        $('#searchInput').value = '';
+        loadItems();
+      };
+
+      // Keyboard shortcut '/' to search
+      document.addEventListener('keydown', e => {
+        if (e.key === '/' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+          e.preventDefault();
+          $('#searchInput').focus();
+        }
+      });
+
+      // Select filters
+      $('#categoryFilter').onchange = loadItems;
+      $('#statusFilter').onchange = loadItems;
+      $('#sortFilter').onchange = loadItems;
+
+      // View switcher
+      $('#viewGridBtn').onclick = () => {
+        isListView = false;
+        $('#viewGridBtn').classList.add('active');
+        $('#viewListBtn').classList.remove('active');
+        renderItems();
+      };
+
+      $('#viewListBtn').onclick = () => {
+        isListView = true;
+        $('#viewListBtn').classList.add('active');
+        $('#viewGridBtn').classList.remove('active');
+        renderItems();
+      };
+
+      // Click on Items Grid (Open detail modal)
+      $('#itemsGrid').onclick = e => {
+        const card = e.target.closest('.item-card');
+        if (card && card.dataset.id) {
+          openItemDetail(card.dataset.id);
+        }
+      };
+
+      // Click on Stat Cards (Fast filter shortcuts)
+      $('#statsGrid').onclick = e => {
+        const card = e.target.closest('.stat-card');
+        if (!card) return;
+        const stat = card.dataset.stat;
+        if (stat === 'all') {
+          resetAllFilters();
+        } else if (stat === 'lost' || stat === 'found') {
+          setTypeFilter(stat);
+        } else if (stat === 'returned') {
+          $('#statusFilter').value = 'returned';
+          loadItems();
+        }
+      };
+
+      // Click on Category progress bars to filter
+      $('#categoryBars').onclick = e => {
+        const item = e.target.closest('.cat-bar-item');
+        if (item && item.dataset.category) {
+          $('#categoryFilter').value = item.dataset.category;
+          loadItems();
+          showToast(`Filtered by ${item.dataset.category}`, 'info');
+        }
+      };
+
+      // Click on Hotspots to filter
+      $('#hotspotList').onclick = e => {
+        const item = e.target.closest('.hotspot-item');
+        if (item && item.dataset.location) {
+          $('#searchInput').value = item.dataset.location;
+          loadItems();
+          showToast(`Filtered by ${item.dataset.location}`, 'info');
+        }
+      };
+
+      // Detail Modal Event delegation (Status change, Claims submit, Delete)
+      $('#detailDialog').addEventListener('click', async e => {
+        // Change Status
+        const statusBtn = e.target.closest('[data-change-status]');
+        if (statusBtn) {
+          const newStatus = statusBtn.dataset.changeStatus;
+          const itemId = statusBtn.dataset.id;
+          try {
+            await apiCall(`/api/items/${itemId}/status`, 'PATCH', { status: newStatus });
+            showToast(`Status updated to ${STATUS_MAP[newStatus]?.label || newStatus}`, 'success');
+            await openItemDetail(itemId);
+            refreshApp();
+          } catch (err) {
+            showToast('Failed to update status: ' + err.message, 'error');
+          }
+          return;
+        }
+
+        // Delete post
+        const delBtn = e.target.closest('#btnDeletePost');
+        if (delBtn) {
+          if (delBtn.dataset.confirming === 'true') {
+            try {
+              await apiCall('/api/items/' + delBtn.dataset.id, 'DELETE');
+              $('#detailDialog').close();
+              showToast('Post deleted successfully', 'info');
+              refreshApp();
+            } catch (err) {
+              showToast('Failed to delete post: ' + err.message, 'error');
+            }
+          } else {
+            delBtn.dataset.confirming = 'true';
+            delBtn.className = 'btn btn-danger-solid';
+            delBtn.innerHTML = '⚠️ Click again to confirm delete';
+            setTimeout(() => {
+              if (delBtn) {
+                delBtn.dataset.confirming = 'false';
+                delBtn.className = 'btn btn-danger';
+                delBtn.innerHTML = '🗑️ Delete Post';
+              }
+            }, 3500);
+          }
+        }
+      });
+
+      // Submit Claim Form in Detail modal
+      $('#detailDialog').addEventListener('submit', async e => {
+        if (e.target.id === 'claimSubmitForm') {
+          e.preventDefault();
+          const form = e.target;
+          const itemId = form.dataset.id;
+          const errBox = $('#claimErrorBox');
+          const submitBtn = form.querySelector('button[type="submit"]');
+
+          submitBtn.disabled = true;
+          submitBtn.textContent = 'Submitting...';
+          errBox.className = 'error-box';
+
+          try {
+            const formData = new FormData(form);
+            const payload = Object.fromEntries(formData.entries());
+
+            await apiCall(`/api/items/${itemId}/claims`, 'POST', payload);
+            showToast('Claim submitted successfully! Poster notified.', 'success');
+            await openItemDetail(itemId);
+            refreshApp();
+          } catch (err) {
+            errBox.textContent = err.message;
+            errBox.classList.add('show');
+          } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Submit Claim Verification';
+          }
+        }
+      });
+
+      // Initial data load
+      refreshApp();
+    });
+  </script>
+</body>
+</html>
